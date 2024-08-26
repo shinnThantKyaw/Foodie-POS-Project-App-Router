@@ -24,9 +24,12 @@ export default function MultipleSelect({
 }: Props) {
   return (
     <div>
-      <FormControl sx={{ m: 1, width: 300 }}>
-        <InputLabel id="demo-multiple-checkbox-label">{title}</InputLabel>
+      <FormControl sx={{ m: 1, width: 300, borderColor: " #8ecae6" }}>
+        <InputLabel id="demo-multiple-checkbox-label" sx={{ color: "#023047" }}>
+          {title}
+        </InputLabel>
         <Select
+          sx={{ color: "#023047" }}
           labelId="demo-multiple-checkbox-label"
           id="demo-multiple-checkbox"
           multiple

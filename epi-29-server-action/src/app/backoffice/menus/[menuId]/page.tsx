@@ -93,7 +93,8 @@ export default function UpdatingMenu({ params }: Props) {
     >
       <Box
         sx={{
-          bgcolor: "#219ebc",
+          bgcolor: "#8ecae6",
+          color: "#023047",
           width: "400px",
           height: "400px",
           borderRadius: "10px",
@@ -169,7 +170,7 @@ export default function UpdatingMenu({ params }: Props) {
           <FormControlLabel
             control={<Checkbox />}
             label="Is Available"
-            sx={{ color: "white" }}
+            sx={{ color: "#023047" }}
             checked={menu.isAvailable ? true : false}
             onChange={() => {
               setMenu({ ...menu, isAvailable: !menu.isAvailable });
@@ -180,7 +181,8 @@ export default function UpdatingMenu({ params }: Props) {
           variant="contained"
           sx={{
             bgcolor: "#023047",
-            ":hover": { bgcolor: "#8ecae6", color: "#023047" },
+            color: "#8ecae6",
+            ":hover": { bgcolor: "#219ebc", color: "#023047" },
             mt: "10px",
           }}
           onClick={handleUpdatingMenu}

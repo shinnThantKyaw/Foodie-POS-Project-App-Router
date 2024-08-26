@@ -77,8 +77,8 @@ const sideBarItems: sideBarItem[] = [
 ];
 export default function SideBar() {
   const sidebarStyle: SxProps = {
-    bgcolor: "#219ebc",
-    color: "white",
+    bgcolor: "#023047",
+    color: "#8ecae6",
     width: "15vw",
     height: "100vh",
     padding: "0",
@@ -89,7 +89,12 @@ export default function SideBar() {
         {sideBarItems.map((item) => {
           return (
             <Link key={item.id} href={item.route}>
-              <ListItem sx={{ padding: "0", ":hover": { bgcolor: "#8ecae6" } }}>
+              <ListItem
+                sx={{
+                  padding: "0",
+                  ":hover": { bgcolor: "#8ecae6", color: "#023047" },
+                }}
+              >
                 <ListItemButton>
                   <ListItemIcon sx={{ color: "inherit" }}>
                     {item.icon}

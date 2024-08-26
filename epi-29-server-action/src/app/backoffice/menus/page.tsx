@@ -9,6 +9,7 @@ import Link from "next/link";
 import { Menus } from "@prisma/client";
 import config from "@/config";
 import { useRouter } from "next/navigation";
+import MenuCard from "@/components/MenuCard";
 
 export default function MenusPage() {
   useEffect(() => {
@@ -47,6 +48,11 @@ export default function MenusPage() {
           }}
         >
           <Button
+            sx={{
+              bgcolor: "#023047",
+              color: "#8ecae6",
+              ":hover": { bgcolor: "#8ecae6", color: "#023047" },
+            }}
             variant="contained"
             onClick={() => {
               router.push("/backoffice/menus/addingMenus");
@@ -68,7 +74,7 @@ export default function MenusPage() {
         >
           <h1
             style={{
-              backgroundColor: "#fb8500",
+              backgroundColor: "#8ecae6",
               color: "#023047",
               padding: "15px",
               borderRadius: "10px",
@@ -93,6 +99,11 @@ export default function MenusPage() {
       >
         <Button
           variant="contained"
+          sx={{
+            bgcolor: "#023047",
+            color: "#8ecae6",
+            ":hover": { bgcolor: "#8ecae6", color: "#023047" },
+          }}
           onClick={() => {
             router.push("/backoffice/menus/addingMenus");
           }}
@@ -113,46 +124,7 @@ export default function MenusPage() {
         }}
       >
         {menus.map((menu) => {
-          return (
-            <Box
-              sx={{
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-                mr: "8px",
-                mt: "10px",
-              }}
-              key={menu.id}
-            >
-              <Link href={`/backoffice/menus/${menu.id}`}>
-                <Box
-                  sx={{
-                    backgroundColor: "#fb8500",
-                    color: "#023047",
-                    width: "170px",
-                    height: "170px",
-                    padding: "15px",
-                    borderRadius: "10px",
-                    display: "flex",
-                    flexDirection: "column",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    cursor: "pointer",
-                  }}
-                >
-                  <h3
-                    style={{ padding: "0", margin: "0", textAlign: "center" }}
-                  >
-                    {menu.name}
-                  </h3>
-                  <span>{menu.price}</span>
-                  <span>
-                    {menu.isAvailable ? "Available" : "Not Available"}
-                  </span>
-                </Box>
-              </Link>
-            </Box>
-          );
+          return <MenuCard menu={menu} />;
         })}
       </Box>
     </>

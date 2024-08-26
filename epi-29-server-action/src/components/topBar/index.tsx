@@ -4,8 +4,8 @@ export default function TopBar() {
   return (
     <Box
       sx={{
-        bgcolor: "#023047",
-        color: "white",
+        bgcolor: "#021e2c",
+        color: "#8ecae6",
         height: "13vh",
         display: "flex",
         justifyContent: "space-between",

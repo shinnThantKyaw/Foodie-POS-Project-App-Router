@@ -17,7 +17,7 @@ export default function BackOfficeLayout({ children }: Props) {
             width: "100%",
             padding: "20px",
             paddingRight: "0px",
-            bgcolor: "#ffb703 ",
+            bgcolor: "#219ebc ",
           }}
         >
           {" "}

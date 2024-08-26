@@ -63,7 +63,7 @@ export default function AddingMenus() {
     >
       <Box
         sx={{
-          bgcolor: "#219ebc",
+          bgcolor: "#8ecae6",
           width: "400px",
           height: "400px",
           borderRadius: "10px",
@@ -117,7 +117,7 @@ export default function AddingMenus() {
           <FormControlLabel
             control={<Checkbox defaultChecked />}
             label="Is Available"
-            sx={{ color: "white" }}
+            sx={{ color: "#023047" }}
             value={menu.isAvailable}
             onChange={() => {
               menu.isAvailable = !menu.isAvailable;
@@ -128,7 +128,8 @@ export default function AddingMenus() {
           variant="contained"
           sx={{
             bgcolor: "#023047",
-            ":hover": { bgcolor: "#8ecae6", color: "#023047" },
+            color: "#8ecae6",
+            ":hover": { bgcolor: "#219ebc", color: "#023047" },
             mt: "10px",
           }}
           onClick={handleAddingMenu}
