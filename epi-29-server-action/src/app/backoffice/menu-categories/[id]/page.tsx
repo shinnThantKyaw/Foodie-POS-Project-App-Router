@@ -23,9 +23,9 @@ export default async function UpdatingMenuCategories({ params }: Props) {
     >
       <Box
         sx={{
-          bgcolor: "#219ebc",
-          width: "400px",
-          height: "400px",
+          bgcolor: "#8ecae6",
+          width: "300px",
+          height: "300px",
           borderRadius: "10px",
           padding: "40px",
           display: "flex",

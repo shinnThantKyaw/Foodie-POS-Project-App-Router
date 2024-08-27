@@ -1,3 +1,4 @@
+import MenuCategoryCard from "@/components/MenuCategoryCard";
 import { prisma } from "@/libs/prisma";
 import { Box, Button, Link } from "@mui/material";
 import { MenusCategories } from "@prisma/client";
@@ -58,7 +59,16 @@ export default async function MenusCategoriesPage() {
         }}
       >
         <Link href={"/backoffice/menu-categories/addingMenuCategories"}>
-          <Button variant="contained">Create New Menu Category</Button>
+          <Button
+            sx={{
+              bgcolor: "#023047",
+              color: "#8ecae6",
+              ":hover": { bgcolor: "#8ecae6", color: "#023047" },
+            }}
+            variant="contained"
+          >
+            Create New Menu Category
+          </Button>
         </Link>
       </Box>
       <Box
@@ -75,43 +85,10 @@ export default async function MenusCategoriesPage() {
       >
         {menuCategories.map((menuCategory) => {
           return (
-            <Link
+            <MenuCategoryCard
               key={menuCategory.id}
-              href={`/backoffice/menu-categories/${menuCategory.id}`}
-              sx={{ textDecoration: "none", color: "inherit" }}
-            >
-              <Box
-                sx={{
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "center",
-                  mr: "8px",
-                  mt: "10px",
-                }}
-              >
-                <Box
-                  sx={{
-                    backgroundColor: "#fb8500",
-                    color: "#023047",
-                    width: "170px",
-                    height: "170px",
-                    padding: "15px",
-                    borderRadius: "10px",
-                    display: "flex",
-                    flexDirection: "column",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    cursor: "pointer",
-                  }}
-                >
-                  <h3
-                    style={{ padding: "0", margin: "0", textAlign: "center" }}
-                  >
-                    {menuCategory.name}
-                  </h3>
-                </Box>
-              </Box>
-            </Link>
+              menuCategory={menuCategory}
+            />
           );
         })}
       </Box>
