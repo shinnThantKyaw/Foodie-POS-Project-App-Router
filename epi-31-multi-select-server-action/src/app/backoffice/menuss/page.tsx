@@ -107,7 +107,7 @@ export default async function MenusPage() {
         }}
       >
         {menus.map((menu) => {
-          return <MenuCard menu={menu} />;
+          return <MenuCard key={menu.id} menu={menu} />;
         })}
       </Box>
     </>
