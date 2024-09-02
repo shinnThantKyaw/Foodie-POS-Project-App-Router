@@ -12,7 +12,6 @@ import {
 import { Menus, MenusCategories } from "@prisma/client";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { addingMenu } from "../action";
 
 export default async function AddingMenus() {
   const menuCategories = await prisma.menusCategories.findMany();
@@ -70,7 +69,6 @@ export default async function AddingMenus() {
         >
           {menuCategories.map((item) => (
             <FormControlLabel
-              key={item.id}
               control={<Checkbox name="menuCategoryId" value={item.id} />}
               label={item.name}
               sx={{ color: "#023047" }}

@@ -1,7 +1,6 @@
-"use client";
-
 import MultipleSelect from "@/components/multipleSelect";
 import config from "@/config";
+import { prisma } from "@/libs/prisma";
 import {
   Box,
   Button,
@@ -17,6 +16,7 @@ import {
 } from "@prisma/client";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { deleteMenu, updatingMenu } from "../action";
 
 interface Props {
   params: {
@@ -24,83 +24,57 @@ interface Props {
   };
 }
 
-export default function UpdatingMenu({ params }: Props) {
-  const router = useRouter();
-  const menuId = params.menuId;
-  const [menu, setMenu] = useState<Menus>();
-  const [selectedMenuCategoryIds, setSelectedMenuCategoryIds] = useState<
-    number[]
-  >([]);
-  const [menuCategories, setMenuCategories] = useState<MenusCategories[]>([]);
+export default async function UpdatingMenu({ params }: Props) {
+  const menuId = Number(params.menuId);
 
-  useEffect(() => {
-    if (menuId) {
-      getMenuById();
-      getTheMenuCategories();
-    }
-  }, [menuId]);
+  const menuCategories = await prisma.menusCategories.findMany();
+  const menuToBeUpdatedOrDeleted = await prisma.menus.findFirst({
+    where: { id: menuId },
+    include: { menusCategoriesAndMenus: true },
+  });
 
-  const getTheMenuCategories = async () => {
-    const response = await fetch(`${config.backofficeApiUrl}/menu-categories`);
-    const dataFromSever = await response.json();
-    const menuCategories: MenusCategories[] = JSON.parse(dataFromSever);
-    console.log("menu categories is", menuCategories);
-    setMenuCategories(menuCategories);
-  };
+  const selectedMenuCategoryIds =
+    menuToBeUpdatedOrDeleted?.menusCategoriesAndMenus.map(
+      (item) => item.menuCategoryIds
+    );
 
-  const getMenuById = async () => {
-    const response = await fetch(`${config.backofficeApiUrl}/menus/${menuId}`);
-    const menuJsonStr = await response.json();
-    const menu = JSON.parse(menuJsonStr);
-    setMenu(menu);
-    if (menu.menusCategoriesAndMenus.length > 0) {
-      const menuCategoryIds = menu.menusCategoriesAndMenus.map(
-        (item: MenusCategoriesAndMenus) => item.menuCategoryIds
-      );
-      setSelectedMenuCategoryIds(menuCategoryIds);
-    }
-  };
-
-  const handelDelete = async (menu: Menus) => {
-    await fetch(`${config.backofficeApiUrl}/menus/${menu.id}`, {
-      method: "DELETE",
-    });
-    router.push("/backoffice/menus");
-  };
-
-  const handleUpdatingMenu = async () => {
-    await fetch(`${config.backofficeApiUrl}/menus`, {
-      method: "PUT",
-      body: JSON.stringify({
-        ...menu,
-        menuCategoryIds: selectedMenuCategoryIds,
-      }),
-    });
-    router.push("/backoffice/menus");
-  };
-
-  if (!menu) {
+  if (!menuToBeUpdatedOrDeleted) {
     return;
   }
 
   return (
-    <Box
-      sx={{
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-      }}
-    >
+    <>
+      {" "}
       <Box
+        component={"form"}
+        action={deleteMenu}
         sx={{
-          bgcolor: "#8ecae6",
-          color: "#023047",
-          width: "400px",
-          height: "400px",
-          borderRadius: "10px",
-          padding: "40px",
+          width: "100%",
           display: "flex",
-          flexDirection: "column",
+          justifyContent: "space-between",
+          alignItems: "center",
+          marginBottom: 2.5,
+          paddingRight: 3,
+        }}
+      >
+        {" "}
+        <h2>Updating Menu</h2>
+        <input type="hidden" name="menuId" value={menuId} />
+        <Button
+          type="submit"
+          variant="contained"
+          color="error"
+          sx={{ mt: "7px" }}
+        >
+          Delete
+        </Button>
+      </Box>
+      <Box
+        component={"form"}
+        action={updatingMenu}
+        sx={{
+          paddingRight: 3,
+          display: "flex",
           justifyContent: "center",
           alignItems: "center",
         }}
@@ -108,88 +82,95 @@ export default function UpdatingMenu({ params }: Props) {
         <Box
           sx={{
             width: "100%",
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            marginBottom: 2.5,
           }}
         >
-          {" "}
-          <h2>Updating Menu</h2>
-          <Button
-            variant="contained"
-            color="error"
-            sx={{ mt: "7px" }}
-            onClick={() => {
-              handelDelete(menu);
+          <Box sx={{ bgcolor: "white", width: "100%", borderRadius: "8px" }}>
+            <TextField
+              name="name"
+              id="outlined-basic"
+              variant="outlined"
+              placeholder="Name"
+              sx={{ width: "100%" }}
+              defaultValue={menuToBeUpdatedOrDeleted.name}
+            />
+          </Box>
+          <Box
+            sx={{
+              bgcolor: "white",
+              my: "20px",
+              width: "100%",
+              borderRadius: "8px",
             }}
           >
-            Delete
+            <TextField
+              name="price"
+              id="outlined-basic"
+              variant="outlined"
+              placeholder="Price"
+              type="number"
+              sx={{ width: "100%" }}
+              defaultValue={
+                menuToBeUpdatedOrDeleted.price === 0
+                  ? ""
+                  : menuToBeUpdatedOrDeleted.price
+              }
+            />
+          </Box>
+          <Box
+            sx={{
+              display: "flex",
+              bgcolor: "white",
+              px: 1.5,
+              py: 1,
+              borderRadius: "5px",
+            }}
+          >
+            {menuCategories.map((item) => (
+              <FormControlLabel
+                key={item.id}
+                control={
+                  <Checkbox
+                    defaultChecked={
+                      selectedMenuCategoryIds?.includes(item.id) ? true : false
+                    }
+                    name="menuCategoryId"
+                    value={item.id}
+                  />
+                }
+                label={item.name}
+                sx={{ color: "#023047" }}
+              />
+            ))}
+          </Box>
+          <Box>
+            <FormControlLabel
+              control={
+                <Checkbox
+                  defaultChecked={
+                    menuToBeUpdatedOrDeleted.isAvailable ? true : false
+                  }
+                  name="isAvailable"
+                />
+              }
+              label="Is Available"
+              sx={{ color: "#023047" }}
+            />
+          </Box>
+          <input type="hidden" name="menuId" value={menuId} />
+          <Button
+            type="submit"
+            variant="contained"
+            sx={{
+              bgcolor: "#023047",
+              color: "#8ecae6",
+              ":hover": { bgcolor: "#219ebc", color: "#023047" },
+              mt: "10px",
+            }}
+          >
+            Update Menu
           </Button>
         </Box>
-        <Box sx={{ bgcolor: "white", width: "100%", borderRadius: "8px" }}>
-          <TextField
-            id="outlined-basic"
-            variant="outlined"
-            placeholder="Name"
-            sx={{ width: "100%" }}
-            value={menu.name}
-            onChange={(e) => {
-              setMenu({ ...menu, name: e.target.value });
-            }}
-          />
-        </Box>
-        <Box
-          sx={{
-            bgcolor: "white",
-            my: "20px",
-            width: "100%",
-            borderRadius: "8px",
-          }}
-        >
-          <TextField
-            id="outlined-basic"
-            variant="outlined"
-            placeholder="Price"
-            type="number"
-            sx={{ width: "100%" }}
-            value={menu.price === 0 ? "" : menu.price}
-            onChange={(e) => {
-              console.log(e.target.value);
-              setMenu({ ...menu, price: Number(e.target.value) });
-            }}
-          />
-        </Box>
-        <MultipleSelect
-          title={"Menu Categories"}
-          selectedMenuCategoryIds={selectedMenuCategoryIds}
-          setSelectedMenuCategoryIds={setSelectedMenuCategoryIds}
-          items={menuCategories}
-        />
-        <Box>
-          <FormControlLabel
-            control={<Checkbox />}
-            label="Is Available"
-            sx={{ color: "#023047" }}
-            checked={menu.isAvailable ? true : false}
-            onChange={() => {
-              setMenu({ ...menu, isAvailable: !menu.isAvailable });
-            }}
-          />
-        </Box>
-        <Button
-          variant="contained"
-          sx={{
-            bgcolor: "#023047",
-            color: "#8ecae6",
-            ":hover": { bgcolor: "#219ebc", color: "#023047" },
-            mt: "10px",
-          }}
-          onClick={handleUpdatingMenu}
-        >
-          Update Menu
-        </Button>
       </Box>
-    </Box>
+    </>
   );
 }
