@@ -1,5 +1,3 @@
-import MultipleSelect from "@/components/multipleSelect";
-import config from "@/config";
 import { prisma } from "@/libs/prisma";
 import {
   Box,
@@ -9,15 +7,12 @@ import {
   Input,
   TextField,
 } from "@mui/material";
-import {
-  Menus,
-  MenusCategories,
-  MenusCategoriesAndMenus,
-} from "@prisma/client";
-import { useParams, useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
 import { deleteMenu, updatingMenu } from "../action";
-import { getMenuCategoriesByCompanyId } from "@/libs/action";
+import {
+  getCurrentLocation,
+  getCurrentLocationId,
+  getMenuCategoriesByCompanyId,
+} from "@/libs/action";
 
 interface Props {
   params: {
@@ -31,12 +26,20 @@ export default async function UpdatingMenu({ params }: Props) {
   const menuCategories = await getMenuCategoriesByCompanyId();
   const menuToBeUpdatedOrDeleted = await prisma.menus.findFirst({
     where: { id: menuId },
-    include: { menusCategoriesAndMenus: true },
+    include: { menusCategoriesAndMenus: true, disableMenusAndLocations: true },
   });
 
   const selectedMenuCategoryIds =
     menuToBeUpdatedOrDeleted?.menusCategoriesAndMenus.map(
       (item) => item.menuCategoryIds
+    );
+
+  const currentLocationId = await getCurrentLocationId();
+  const isCurrentNotAvailableMenu =
+    menuToBeUpdatedOrDeleted?.disableMenusAndLocations.find(
+      (item) =>
+        item.menuId === menuToBeUpdatedOrDeleted.id &&
+        item.locationId === currentLocationId
     );
 
   if (!menuToBeUpdatedOrDeleted) {
@@ -147,9 +150,7 @@ export default async function UpdatingMenu({ params }: Props) {
             <FormControlLabel
               control={
                 <Checkbox
-                  defaultChecked={
-                    menuToBeUpdatedOrDeleted.isAvailable ? true : false
-                  }
+                  defaultChecked={isCurrentNotAvailableMenu ? false : true}
                   name="isAvailable"
                 />
               }
@@ -158,6 +159,11 @@ export default async function UpdatingMenu({ params }: Props) {
             />
           </Box>
           <input type="hidden" name="menuId" value={menuId} />
+          <input
+            type="hidden"
+            name="isCurrentNotAvailableMenu"
+            value={isCurrentNotAvailableMenu?.id}
+          />
           <Button
             type="submit"
             variant="contained"

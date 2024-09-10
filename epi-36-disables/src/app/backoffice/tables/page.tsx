@@ -1,26 +1,11 @@
-"use client";
-
 import { Box, Button } from "@mui/material";
 import Link from "next/link";
-import { getCurrentLocationId, getTablesByLocationId } from "@/libs/action";
+import { getTablesByLocationId } from "@/libs/action";
 import TableBarIcon from "@mui/icons-material/TableBar";
 import ItemCard from "@/components/ItemCard";
-import { useEffect, useState } from "react";
-import { Tables } from "@prisma/client";
 
-export default function TablesPage() {
-  const [tables, setTables] = useState<Tables[]>([]);
-  useEffect(() => {
-    handleGetTablesByCurrentLocation();
-  }, []);
-
-  const handleGetTablesByCurrentLocation = async () => {
-    const currentLocationId = (await getCurrentLocationId()) as number;
-
-    const tables: Tables[] = await getTablesByLocationId(currentLocationId);
-
-    setTables(tables);
-  };
+export default async function TablesPage() {
+  const tables = await getTablesByLocationId();
 
   if (!tables) {
     return (

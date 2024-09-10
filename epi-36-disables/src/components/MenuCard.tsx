@@ -5,10 +5,11 @@ import { Menus } from "@prisma/client";
 
 interface Props {
   menu: Menus;
+  isAvailable: boolean;
 }
 
-export default function MenuCard({ menu }: Props) {
-  const { name, price, isAvailable } = menu;
+export default function MenuCard({ menu, isAvailable }: Props) {
+  const { name, price } = menu;
   return (
     <Link
       href={`/backoffice/menus/${menu.id}`}
@@ -61,8 +62,8 @@ export default function MenuCard({ menu }: Props) {
             }}
           >
             <Chip
-              label={menu.isAvailable ? "Available" : "Sold out"}
-              color={menu.isAvailable ? "success" : "error"}
+              label={isAvailable ? "Available" : "Sold out"}
+              color={isAvailable ? "success" : "error"}
               sx={{ fontSize: "0.75rem", padding: "2px 8px" }}
             />
           </Box>

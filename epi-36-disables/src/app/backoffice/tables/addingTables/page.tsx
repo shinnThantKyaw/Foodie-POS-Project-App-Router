@@ -1,10 +1,9 @@
-"use client";
-
 import { Box, Button, TextField } from "@mui/material";
 import { addingTable } from "../action";
+import { getCurrentLocationId } from "@/libs/action";
 
-export default function AddingMenus() {
-  const currentLocationId = Number(localStorage.getItem("currentLocationId"));
+export default async function AddingMenus() {
+  const currentLocationId = await getCurrentLocationId();
   return (
     <Box
       component={"form"}

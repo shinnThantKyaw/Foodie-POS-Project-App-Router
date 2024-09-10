@@ -1,5 +1,6 @@
 "use server";
 
+import { getCurrentLocationId } from "@/libs/action";
 import { prisma } from "@/libs/prisma";
 import { MenusCategoriesAndMenus } from "@prisma/client";
 import { redirect } from "next/navigation";
@@ -11,7 +12,7 @@ export async function addingMenu(formData: FormData) {
   const selectedMenuCategoryIds = formData.getAll("menuCategoryId");
 
   const addedMenu = await prisma.menus.create({
-    data: { name, price, isAvailable },
+    data: { name, price },
   });
 
   const data: any = selectedMenuCategoryIds.map((id) => ({
@@ -19,6 +20,13 @@ export async function addingMenu(formData: FormData) {
     menuCategoryIds: Number(id),
   }));
   await prisma.menusCategoriesAndMenus.createMany({ data: data });
+
+  if (!isAvailable) {
+    const currentLocationId = (await getCurrentLocationId()) as number;
+    await prisma.disableMenusAndLocations.create({
+      data: { menuId: addedMenu.id, locationId: currentLocationId },
+    });
+  }
   redirect("/backoffice/menus");
 }
 
@@ -28,9 +36,12 @@ export async function updatingMenu(formData: FormData) {
   const isAvailable = formData.get("isAvailable") ? true : false;
   const menuId = Number(formData.get("menuId"));
   const updatedMenuCategoryIds = formData.getAll("menuCategoryId");
+  const isCurrentNotAvailableMenu = Number(
+    formData.get("isCurrentNotAvailableMenu")
+  );
 
   await prisma.menus.update({
-    data: { name, price, isAvailable },
+    data: { name, price },
     where: { id: menuId },
   });
 
@@ -56,6 +67,24 @@ export async function updatingMenu(formData: FormData) {
       where: { menuId: menuId },
     });
     await prisma.menusCategoriesAndMenus.createMany({ data: data });
+  }
+
+  if (isAvailable) {
+    if (isCurrentNotAvailableMenu) {
+      await prisma.disableMenusAndLocations.delete({
+        where: { id: isCurrentNotAvailableMenu },
+      });
+    }
+  } else {
+    {
+      !isCurrentNotAvailableMenu;
+    }
+    {
+      const currentLocationId = (await getCurrentLocationId()) as number;
+      await prisma.disableMenusAndLocations.create({
+        data: { menuId, locationId: currentLocationId },
+      });
+    }
   }
   redirect("/backoffice/menus");
 }

@@ -1,5 +1,3 @@
-import MultipleSelect from "@/components/multipleSelect";
-import config from "@/config";
 import { prisma } from "@/libs/prisma";
 import {
   Box,
@@ -9,9 +7,6 @@ import {
   Input,
   TextField,
 } from "@mui/material";
-import { Menus, MenusCategories } from "@prisma/client";
-import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
 import { addingMenu } from "../action";
 import { getMenuCategoriesByCompanyId } from "@/libs/action";
 

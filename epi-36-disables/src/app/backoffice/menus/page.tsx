@@ -9,10 +9,16 @@ import config from "@/config";
 import { useRouter } from "next/navigation";
 import MenuCard from "@/components/MenuCard";
 import { prisma } from "@/libs/prisma";
-import { getMenusByCompanyId, getTablesByLocationId } from "@/libs/action";
+import {
+  getCurrentLocationId,
+  getMenusByCompanyId,
+  getTablesByLocationId,
+} from "@/libs/action";
 
 export default async function MenusPage() {
-  const menus: Menus[] = await getMenusByCompanyId();
+  const menus = await getMenusByCompanyId();
+  const currentLocationId = await getCurrentLocationId();
+
   if (!menus) {
     return (
       <Box>
@@ -107,7 +113,17 @@ export default async function MenusPage() {
         }}
       >
         {menus.map((menu) => {
-          return <MenuCard key={menu.id} menu={menu} />;
+          const menuIsNotAvailable = menu.disableMenusAndLocations.find(
+            (item) =>
+              item.menuId === menu.id && item.locationId === currentLocationId
+          );
+          return (
+            <MenuCard
+              key={menu.id}
+              menu={menu}
+              isAvailable={menuIsNotAvailable ? false : true}
+            />
+          );
         })}
       </Box>
     </>

@@ -16,9 +16,9 @@ model Menus{
   id Int @id @default(autoincrement())
   name String
   price Int? @default(0)
-  isAvailable Boolean? @default(true)
   menusCategoriesAndMenus MenusCategoriesAndMenus[]
   addonCategoriesAndMenus AddonCategoriesAndMenus[]
+  disableMenusAndLocations DisableMenusAndLocations[]
 }
 
 model MenusCategories{
@@ -27,7 +27,7 @@ model MenusCategories{
   menusCategoriesAndMenus MenusCategoriesAndMenus[]
   companyId Int
   company Company @relation(fields: [companyId],references: [id])
-
+  disableMenuCategoriesAndLocations DisableMenuCategoriesAndLocations[]
 }
 
 model MenusCategoriesAndMenus {
@@ -86,11 +86,11 @@ model Locations{
   id Int @id @default(autoincrement())
   name String
   companyId Int
-    company Company @relation(fields: [companyId],references: [id])
-    tables Tables[]
-
-
+  company Company @relation(fields: [companyId],references: [id])
+  tables Tables[]
   userAndSelectedLocation UserAndSelectedLocation[]
+  disableMenusAndLocations DisableMenusAndLocations[]
+  disableMenuCategoriesAndLocations DisableMenuCategoriesAndLocations[]
 }
 
 model Tables{
@@ -104,6 +104,21 @@ model UserAndSelectedLocation{
   id Int @id @default(autoincrement())
   userId Int
   users Users @relation(fields: [userId],references: [id])
+  locationId Int
+  locations Locations @relation(fields: [locationId],references: [id])
+}
+
+model DisableMenusAndLocations{
+  id Int @id @default(autoincrement())
+  menuId Int
+  menus Menus @relation(fields: [menuId],references: [id])
+  locationId Int
+  locations Locations @relation(fields: [locationId],references: [id])
+}
+model DisableMenuCategoriesAndLocations{
+  id Int @id @default(autoincrement())
+  menuCategoryId Int
+  menuCategories MenusCategories @relation(fields: [menuCategoryId],references: [id])
   locationId Int
   locations Locations @relation(fields: [locationId],references: [id])
 }

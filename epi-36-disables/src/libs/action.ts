@@ -106,6 +106,7 @@ export async function getMenusByCompanyId() {
 
   const menus = await prisma.menus.findMany({
     where: { id: { in: menuIds } },
+    include: { disableMenusAndLocations: true },
     orderBy: { id: "asc" },
   });
 
