@@ -88,6 +88,7 @@ export async function getMenuCategoriesByCompanyId() {
   const companyId = await getCompanyId();
   const menuCategories = await prisma.menusCategories.findMany({
     where: { companyId },
+    include: { disableMenuCategoriesAndLocations: true },
     orderBy: { id: "asc" },
   });
 
@@ -175,11 +176,20 @@ export async function getTablesByLocationId() {
 }
 
 export async function getCurrentUserAndSelectedLocation() {
-  const userId = await getUserId();
+  const userId = (await getUserId()) as number;
   const currentUserAndSelectedLocation =
     await prisma.userAndSelectedLocation.findFirst({
       where: { userId },
     });
+  if (!currentUserAndSelectedLocation) {
+    const locations = await getLocationsByCompanyId();
+    const firstLocationId = locations[0].id;
+    const currentUserAndSelectedLocation =
+      await prisma.userAndSelectedLocation.create({
+        data: { userId, locationId: firstLocationId },
+      });
+    return currentUserAndSelectedLocation;
+  }
   return currentUserAndSelectedLocation;
 }
 

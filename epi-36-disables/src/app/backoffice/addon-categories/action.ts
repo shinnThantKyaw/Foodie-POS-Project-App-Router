@@ -63,6 +63,7 @@ export async function updatingAddonCategory(formData: FormData) {
 export async function deleteAddonCategory(formData: any) {
   const id = Number(formData.get("addonCategoryId"));
 
+  await prisma.addons.deleteMany({ where: { addonCategoryId: id } });
   await prisma.addonCategoriesAndMenus.deleteMany({
     where: { addonCategoryId: id },
   });

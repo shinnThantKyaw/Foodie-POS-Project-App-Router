@@ -94,6 +94,7 @@ export async function deleteMenu(formData: FormData) {
 
   await prisma.menusCategoriesAndMenus.deleteMany({ where: { menuId } });
   await prisma.addonCategoriesAndMenus.deleteMany({ where: { menuId } });
+  await prisma.disableMenusAndLocations.deleteMany({ where: { menuId } });
   await prisma.menus.delete({
     where: { id: menuId },
   });
