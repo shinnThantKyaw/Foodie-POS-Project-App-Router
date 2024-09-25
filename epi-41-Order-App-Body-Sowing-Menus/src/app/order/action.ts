@@ -3,6 +3,7 @@
 import { prisma } from "@/libs/prisma";
 
 export async function getLocationByTableId(tableId: number) {
+  console.log("table id is", tableId, ",##########################");
   const table = await prisma.tables.findFirst({ where: { id: tableId } });
   const location = await prisma.locations.findFirst({
     where: { id: Number(table?.locationId) },
@@ -11,6 +12,8 @@ export async function getLocationByTableId(tableId: number) {
 }
 
 export async function getCompanyByTableId(tableId: number) {
+  console.log("table id is", tableId, "$$$$$$$$$$$$$$$$$$$$");
+  if (!tableId) return null;
   const location = await getLocationByTableId(tableId);
 
   const company = await prisma.company.findFirst({
@@ -65,10 +68,11 @@ export async function getMenusByMenuCategoryId(
 
   const disableMenus = allMenusByMenuCategoryId.filter((menu) =>
     menu.disableMenusAndLocations.find(
-      (item) => item.id === menu.id && item.locationId === location?.id
+      (item) => item.menuId === menu.id && item.locationId === location?.id
     )
   );
-
+  console.log("all menus are", allMenusByMenuCategoryId, "################");
+  console.log("disable menus are", disableMenus);
   const disableMenuIds = disableMenus.map((menu) => menu.id);
 
   const menus = allMenusByMenuCategoryId.filter(

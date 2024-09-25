@@ -14,7 +14,6 @@ export default async function OrderPage({ searchParams }: Props) {
   const company = await getCompanyByTableId(tableId);
   const menuCategories = await getMenuCategoriesByTableId(tableId);
 
-  console.log("menuCategories are", menuCategories);
   return (
     <Box>
       <OrderAppHeader company={company} />

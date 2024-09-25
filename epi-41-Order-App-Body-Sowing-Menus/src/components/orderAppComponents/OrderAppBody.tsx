@@ -15,7 +15,9 @@ export default function OrderAppBody({ menuCategories, tableId }: Props) {
     menuCategories[0].id
   );
   return (
-    <Box>
+    <Box
+      sx={{ display: "flex", flexDirection: "column", alignItems: "center" }}
+    >
       <MenuCategoryTabs
         menuCategories={menuCategories}
         setSelectedMenuCategoryId={setSelectedMenuCategoryId}

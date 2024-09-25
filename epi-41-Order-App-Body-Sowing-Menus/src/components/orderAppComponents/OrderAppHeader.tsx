@@ -4,14 +4,15 @@ import Image from "next/image";
 
 interface Props {
   company: Company | null;
+  headerImageUrl?: string;
 }
-export default function OrderAppHeader({ company }: Props) {
+export default function OrderAppHeader({ company, headerImageUrl }: Props) {
   if (!company) return null;
   return (
     <Box>
       <Image
         alt="headerImage"
-        src="order-app-header.svg"
+        src="/order-app-header.svg"
         height={0}
         width={0}
         sizes="100vw"
@@ -24,12 +25,26 @@ export default function OrderAppHeader({ company }: Props) {
           flexDirection: "column",
           alignItems: "center",
           position: "absolute",
-          top: "30px",
+          top: headerImageUrl ? "15px" : "30px",
           color: "#fefae0",
         }}
       >
-        <h1>{company.name}</h1>
-        <h5 style={{ fontStyle: "italic" }}>{company.name}</h5>
+        {headerImageUrl ? (
+          <img
+            src={headerImageUrl}
+            style={{
+              width: "150px",
+              height: "150px",
+              borderRadius: "150px",
+            }}
+          />
+        ) : (
+          <>
+            {" "}
+            <h1>{company.name}</h1>
+            <h5 style={{ fontStyle: "italic" }}>{company.name}</h5>
+          </>
+        )}
       </Box>
     </Box>
   );
