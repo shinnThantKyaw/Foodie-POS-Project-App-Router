@@ -24,6 +24,7 @@ export default function AddonCategoriesAndAddons({
 
         return (
           <Box
+            key={addonCategoryByMenu.id}
             sx={{
               mb: 3,
               border: "1px,solid,lightgray",
