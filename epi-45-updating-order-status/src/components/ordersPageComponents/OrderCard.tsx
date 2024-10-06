@@ -8,6 +8,7 @@ import Buttons from "@/components/ordersPageComponents/ButtonsGroup";
 import { Box, Card, Divider, Typography } from "@mui/material";
 import { Tables } from "@prisma/client";
 import OrderStatusCard from "./OrderStatusCard";
+import { prisma } from "@/libs/prisma";
 
 interface Props {
   order: OrdersWithMenusAndOrdersAndAddonsAndTables;

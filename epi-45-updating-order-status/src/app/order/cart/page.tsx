@@ -192,7 +192,14 @@ export default async function Cart({ searchParams }: Props) {
           sx={{ display: "flex", justifyContent: "center", mt: 4 }}
         >
           {ordersInCart.map((order) => {
-            return <input type="hidden" value={order.id} name="orderId" />;
+            return (
+              <input
+                key={order.id}
+                type="hidden"
+                value={order.id}
+                name="orderId"
+              />
+            );
           })}
 
           <input type="hidden" value={tableId} name="tableId" />

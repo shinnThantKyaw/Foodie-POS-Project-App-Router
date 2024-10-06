@@ -55,7 +55,7 @@ export default function OrderAppMenus({
       }}
     >
       {menus.map((menu) => {
-        return <MenuCardOrderApp menu={menu} tableId={tableId} />;
+        return <MenuCardOrderApp key={menu.id} menu={menu} tableId={tableId} />;
       })}
     </Box>
   );

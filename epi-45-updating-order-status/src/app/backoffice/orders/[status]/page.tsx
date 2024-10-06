@@ -2,6 +2,7 @@ import ButtonsGroup from "@/components/ordersPageComponents/ButtonsGroup";
 import NoOrderPage from "@/components/ordersPageComponents/NoOrderPage";
 import OrderCard from "@/components/ordersPageComponents/OrderCard";
 import { getTablesByLocationId } from "@/libs/action";
+import { prisma } from "@/libs/prisma";
 import { Box, Typography } from "@mui/material";
 import { ORDERSTATUS, Prisma } from "@prisma/client";
 import { getServerSession } from "next-auth";
